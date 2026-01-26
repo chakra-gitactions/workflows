@@ -5,7 +5,7 @@ jobs:
  test:
   concurrency: 
    group: ${{github.repository}}-${{github.ref}}
-   cancel-in-progress: false  #Will not cancell the running job and wont trigger a new one.
+   cancel-in-progress: true  #Will cancell the running job and trigger a new one.
   runs-on: ubuntu-latest
   steps:
   - name: sleep
