@@ -1,0 +1,11 @@
+name: condition workflow
+on:
+ workflow_dispatch: 
+jobs:
+ conditions:
+  runs-on: ubuntu-latest
+  if: github.ref == 'ref/heads/main'
+  steps:
+  - name: run when it is main
+    run: echo "main branch"
+  
