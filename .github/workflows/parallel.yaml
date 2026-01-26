@@ -1,0 +1,30 @@
+name: parallel jobs
+on:
+ workflow_dispatch:
+jobs:
+ job1:
+  runs-on: ubuntu-latest
+  steps: 
+  - name: first job
+    run: |
+      echo "First job"
+      sleep 50
+ job2:
+  runs-on: ubuntu-latest
+  steps: 
+  - name: second job
+    run: |
+      echo "second job"
+      sleep 50
+ job3:
+  runs-on: ubuntu-latest
+  steps: 
+  - name: thrid job
+    run: |
+      echo "First job"
+      sleep 50
+
+
+
+
+      
