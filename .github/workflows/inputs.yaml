@@ -17,6 +17,7 @@ on:
 jobs:
  provide_inputs:
   runs-on: ubuntu-latest
+  environment: "${{github.event.inputs.env}}"
   steps:
   - name: print inputs
     run: |
