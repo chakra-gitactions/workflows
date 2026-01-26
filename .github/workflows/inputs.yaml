@@ -1,29 +1,29 @@
-name: Input test workflow
-on:
-  workflow_dispatch: 
+name: inputs test
+on: 
+ workflow_dispatch:
    inputs:
      name:
-      description: 'enter your name'
-      required: true
-      default: 'DevOps engineer'
-     env:
-       description: 'select environment'
-       required: true
-       type: choice
-       options:
-        - dev
-        - prod 
-     retry_count:
-      description: 'Number of retries'
+      description: "Enter you name"
       required: false
-      default: '3'
+      default: "DevOps engineer"
+     env:
+      description: "provide the environment"
+      required: true
+      type: choice
+      default: dev
+      options:
+       - dev
+       - prod
+     retry_count:
+      description: "number of retries"
+      default: "3"
+      required: false
 jobs:
  provide_inputs:
   runs-on: ubuntu-latest
-  environment: "${{github.event.inputs.env}}"
   steps:
   - name: print inputs
     run: |
-     echo "Name: ${{ github.event.inputs.name }}"
-     echo "Environment: ${{ github.event.inputs.env}}"
-     echo "Retries: ${{ github.event.inputs.retry_count}}"
+     echo "${{github.event.inputs.name}}"
+     echo "${{github.event.inputs.env}}"
+     echo "${{github.event.inputs.retry_count}}"
