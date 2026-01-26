@@ -1,0 +1,31 @@
+name: Env at all levels
+
+on:
+  workflow_dispatch:
+
+# ───── Workflow level ─────
+env:
+  GLOBAL_VAR: global
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+
+    # ───── Job level ─────
+    env:
+      JOB_VAR: job
+
+    steps:
+      - name: Step with inherited env
+        run: |
+          echo "GLOBAL_VAR=$GLOBAL_VAR"
+          echo "JOB_VAR=STEP"
+
+      - name: Step with its own env
+        # ───── Step level ─────
+        env:
+          STEP_VAR: step
+        run: |
+          echo "GLOBAL_VAR=$GLOBAL_VAR"
+          echo "JOB_VAR=$JOB_VAR"
+          echo "STEP_VAR=$STEP_VAR"
