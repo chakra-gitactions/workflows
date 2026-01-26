@@ -9,7 +9,10 @@ on:
      env:
        description: "select environment"
        required: true
-       type: environment
+       type: choice
+       options:
+        - dev
+        - prod 
      retry_count:
       description: "Number of retries"
       required: false
@@ -24,4 +27,3 @@ jobs:
      echo "Name: ${{ github.event.inputs.name }}
      echo "Environment: ${{ github.event.inputs.env}}
      echo "Retries: ${{ github.event.inputs.retry_count}}
-
