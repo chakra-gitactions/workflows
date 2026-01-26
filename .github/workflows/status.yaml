@@ -1,0 +1,24 @@
+name: status
+on: 
+ workflow_dispatch
+jobs:
+ status-job:
+  runs-on: ubuntu-latest
+  steps:
+  - name: Always run
+    if: always()
+    run: echo "Always"
+
+  - name: On success
+    if: success()
+    run: echo "Success"
+
+  - name: On failure
+    if: failure()
+    run: echo "Failure"
+    
+  - name: On cancel
+    if: cancelled()
+    run: echo "Cancelled"
+
+    
