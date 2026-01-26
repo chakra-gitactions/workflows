@@ -24,6 +24,6 @@ jobs:
   steps:
   - name: print inputs
     run: |
-     echo "Name: ${{ github.event.inputs.name }}
-     echo "Environment: ${{ github.event.inputs.env}}
-     echo "Retries: ${{ github.event.inputs.retry_count}}
+     echo "Name: ${{ github.event.inputs.name }}"
+     echo "Environment: ${{ github.event.inputs.env}}"
+     echo "Retries: ${{ github.event.inputs.retry_count}}"
