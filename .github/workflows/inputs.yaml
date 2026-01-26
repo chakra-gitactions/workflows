@@ -3,20 +3,20 @@ on:
   workflow_dispatch: 
    inputs:
      name:
-      description: "enter your name"
+      description: 'enter your name'
       required: true
       default: 'DevOps engineer'
      env:
-       description: "select environment"
+       description: 'select environment'
        required: true
        type: choice
        options:
         - dev
         - prod 
      retry_count:
-      description: "Number of retries"
+      description: 'Number of retries'
       required: false
-      default: "3"
+      default: '3'
 jobs:
  provide_inputs:
   runs-on: ubuntu-latest
