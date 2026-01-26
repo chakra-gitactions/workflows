@@ -9,4 +9,4 @@ jobs:
   - name: Timeout if job runs beyond 1 minutes
     run: echo "job should not run beyond 1 minutes"
   - name: sleep for 10 minutes
-    run: sleep 10
+    run: sleep 100
