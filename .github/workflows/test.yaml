@@ -1,27 +1,13 @@
 name: test
 on:
  workflow_dispatch:
-  inputs: #Inputs are at workflow trigger level
-   name:
-    description: "Enter your name"
-    required: true
-    default: "Chakradhar Reddy Jeereddy"
-   envn:
-    description: "Enter the environment"
-    required: true
-    default: "dev"
-    type: choice
-    options:
-      - dev
-      - prod
-   retry_count: 
-     description: "Number of retries"
-     required: false
-     default: "3"
 jobs:
  test:
+  timeout-minutes: 1
+  concurrency:
+   group:  ${{github.repository}}-${{github.ref}}
+   cancel-in-progress: false
   runs-on: ubuntu-latest
   steps:
   - name: print name
-    if: ${{inputs.envn == 'prod'}}
-    run: echo "This is prod"
+    run: sleep 100
