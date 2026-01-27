@@ -58,7 +58,39 @@ jobs:                       # Can run multiple jobs inside pipeline
    - timeout-minutes is defined at job level
    - concurrency is defined at trigger level
    - Need to create a unique group for concurrency
-  
+
+  Key elements
+  ==
+  - Workflow
+    - Attached to github repository
+    - Contains one or more jobs
+    - Triggered upon events
+  - Jobs
+    - We choose runners like agents in jenkins
+    - Contains one or more steps
+    - Jobs run in parallel by default
+    - It can be sequential by defining dependencies(needs)
+   - Steps
+     - Execute commands or call actions
+     - Always run in order and can be conditional
+
+Manual events
+==
+- workflow_dispatch: Used to trigger manually.
+- repository_dispatch: API request triggers workflow.
+- Schedule: Workflow scheduled.
+- Workflow_call: It can be called by other workflows.
+
+Actions
+==
+- Reusable snippet or code
+- It is called into workflow using "uses" in steps
+- To download repo into runner we use ***uses: actions/checkout@v3***
+- We use version to keep it stable and wont take new/untested versions.
+
+Actions
+==
+
 
 
 
