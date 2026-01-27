@@ -6,7 +6,7 @@ on:
     description: "Enter your name"
     required: true
     default: "Chakradhar Reddy Jeereddy"
-   env:
+   envn:
     description: "Enter the environment"
     required: true
     default: "dev"
@@ -23,4 +23,5 @@ jobs:
   runs-on: ubuntu-latest
   steps:
   - name: print name
-    run: echo "hello world"
+    if: ${{inputs.envn == 'prod'}}
+    run: echo "This is prod"
