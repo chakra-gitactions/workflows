@@ -53,7 +53,12 @@ jobs:                       # Can run multiple jobs inside pipeline
 - We can specify list of events to trigger.
 - ***Refer:** inputs.yaml
 
-
+- ***Options**:
+   - Define timeout or concurrency
+   - timeout-minutes is defined at job level
+   - concurrency is defined at trigger level
+   - Need to create a unique group for concurrency
+  
 
 
 
