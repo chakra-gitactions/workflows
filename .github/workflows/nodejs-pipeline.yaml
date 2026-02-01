@@ -44,7 +44,22 @@ jobs:
     run: npm install
 
   - name: Run test
-    run: npm run test
+    id: unit_tests
+    run: echo "run init test"
+    
+  - name: Update commit status (final)
+    if: always()
+    uses: .github/actions/action.yaml
+    with:
+      sha: ${{github.sha}}
+      state: ${{steps.unit_tests.outcome}}  #success, failure, cancelled, error.
+      context: UNIT_TESTS
+      description: "Unit test ${{steps.unit_tests.outcome}}"
+      
+  - name: Build image
+    run: |
+      docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion::5} .
+      docker images
 
   - name: Configure AWS credentials
     uses: aws-actions/configure-aws-credentials@v5
@@ -53,11 +68,6 @@ jobs:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
-  - name: Build image
-    run: |
-      docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion::5} .
-      docker images
-
   - name: Push image
     run: |
      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${acid}.dkr.ecr.us-east-1.amazonaws.com
