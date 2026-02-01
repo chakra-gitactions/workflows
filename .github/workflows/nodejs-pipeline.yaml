@@ -80,12 +80,7 @@ jobs:
     run: |
           image_name=${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion}
           #Scan the image for vulnerabilites
-          trivy image \
-            --scanners vuln
-            --format table \
-            --pkg-types os \
-            --severity CRITICAL,HIGH,MEDIUM \
-            --exit-code 1 $image_name
+          trivy image --scanners vuln --format table --pkg-types os --severity CRITICAL,HIGH,MEDIUM --exit-code 1 $image_name
 
   - name: Update commit status for image scan
     if: always()
