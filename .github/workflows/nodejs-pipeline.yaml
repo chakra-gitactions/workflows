@@ -30,9 +30,9 @@ jobs:
   - name: Print inputs
     run: |
      echo ${appVersion}
-     echo ${project}
-     echo ${environment}
-     echo ${component}
+     echo ${{inputs.project}}
+     echo ${{inputs.component}}
+     echo ${{inputs.environment}}
 
   - name: Install dependencies
     id: dependencies
@@ -63,10 +63,10 @@ jobs:
   - name: Build image
     id: docker_build
     run: |
-       docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appVersion} .
+       docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion} .
        docker images
 
-  - name: Update commit status for unit test
+  - name: Update commit status for docker build
     if: always()
     uses: chakra-gitactions/workflows/.github/actions@main
     with:
@@ -78,7 +78,7 @@ jobs:
   - name: Scan image
     id: trivy
     run: |
-          image-name: ${acid}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appVersion}
+          image-name: ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion}
           #Scan the image for vulnerabilites
           trivy image \
             --scanners vuln
@@ -87,7 +87,7 @@ jobs:
             --severity CRITICAL,HIGH,MEDIUM \
             --exit-code 1 $image-name
 
-  - name: Update commit status for unit test
+  - name: Update commit status for image scan
     if: always()
     uses: chakra-gitactions/workflows/.github/actions@main
     with:
