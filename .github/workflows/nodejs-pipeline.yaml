@@ -63,7 +63,7 @@ jobs:
   - name: Build image
     id: docker_build
     run: |
-       docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appVersion}
+       docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appVersion} .
        docker images
 
   - name: Update commit status for unit test
