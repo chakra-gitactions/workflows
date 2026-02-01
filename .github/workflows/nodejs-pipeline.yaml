@@ -69,7 +69,23 @@ jobs:
       sha: ${{github.sha}}
       state: ${{steps.docker_build.outcome}}  #success, failure, cancelled, error.
       context: DOCKER_BUILD
-      description: "Unit test ${{steps.docker_build.outcome}}"
+      description: "DOCKER_BUILD ${{steps.docker_build.outcome}}"
+  
+  - name: Scan image
+    id: trivy
+    run: |
+          IMAGE_NAME=${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion::5}
+          # scan the image for vulnerabilities
+          trivy image --scanners vuln --pkg-types os --severity CRITICAL,HIGH,MEDIUM --exit-code 1 --format table  $IMAGE_NAME
+
+  - name: Update commit status (final)
+    if: always()
+    uses: chakra-gitactions/workflows/.github/actions@main
+    with:
+      sha: ${{github.sha}}
+      state: ${{steps.trivy.outcome}}  #success, failure, cancelled, error.
+      context: SCAN_IMAGE
+      description: "SCAN IMAGE ${{steps.trivy.outcome}}"
       
   - name: Configure AWS credentials
     uses: aws-actions/configure-aws-credentials@v5
