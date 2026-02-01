@@ -23,7 +23,7 @@ jobs:
 
   - name: Get application version
     run: |  # When we store it in GITHUB_ENV it can be used in other steps in the same job.
-      echo "appVersion=${GIHUB_SHA::5} >> $GITHUB_ENV
+      echo "appVersion=${GIHUB_SHA::5}" >> $GITHUB_ENV
 
   - name: print app version
     run: |
