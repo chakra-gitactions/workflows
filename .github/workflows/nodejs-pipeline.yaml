@@ -49,7 +49,7 @@ jobs:
     
   - name: Update commit status (final)
     if: always()
-    uses: ./.github/actions
+    uses: chakra-gitactions/workflows/.github/actions@main
     with:
       sha: ${{github.sha}}
       state: ${{steps.unit_tests.outcome}}  #success, failure, cancelled, error.
