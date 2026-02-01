@@ -1,7 +1,7 @@
 name: nodejs pipeline
 on:
- workflow_call:
-  inputs:
+ workflow_call:  #This pipeline can be called by other pipelines
+  inputs:        #The caller should provide the inputs if these are required.
    project:
     required: true
     type: string
@@ -12,19 +12,26 @@ on:
     required: true
     type: string
 env:
- acid: 406682759639
- appVersion: ${{ github.sha }}
+ acid: 406682759639    
+ appVersion: ${{ github.sha }}  #The commit is is stored in sha variable of context "github".
 jobs:
- nodejs-pipeline:
-  runs-on: self-hosted
+ nodejs-pipeline:   # Name of the pipeline
+  runs-on: self-hosted  # Using the runner defined by us.
   steps:
-  - name: Get code
+  - name: Get code    # Downloading the code into the runner using a plugin.
     uses: actions/checkout@v6
       
   - name: List files
     run: ls -l
-
-  - name: Print app version
+  
+  #- name: get commitid
+  #  run: |   # if you store commit id in GITHUB_ENV, it can be used in other steps and in same job.
+  #    echo "version=${GITHUB_SHA::5}" >> "${GITHUB_ENV}"
+  # - name: Print version
+  #  run: |
+  #    echo "Version: ${version}
+  
+  - name: Print app version   #Print only first 5 charecters of commitid.
     run: echo ${appVersion::5}
 
   - name: Print inputs
