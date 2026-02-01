@@ -5,7 +5,7 @@ on:
    project:
     required: true
     type: string
-   enironment:
+   environment:
     required: true
     type: string
    component:
