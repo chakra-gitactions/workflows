@@ -1,0 +1,39 @@
+name: nodejs pipeline
+on:
+ workflow_call: 
+  inputs:
+    project:
+     required: true
+     type: string
+    environment:
+     required: true
+     type: string
+    component:
+     required: true
+     type: string
+jobs:
+ nodejs-pipeline:
+  runs-on: DEV
+  steps:
+  - name: Get code
+    uses: actions/checkout@v6
+  - name: List files
+    run: ls -l
+    
+    
+  
+   
+ 
+
+
+
+
+
+
+
+
+
+ 
+  
+     
+ 
