@@ -31,7 +31,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   - name: build image
     run: |
-        docker build -t roboshop/catalogue:latest ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:latest .
+        docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:latest .
         docker images
   - name: push image
     run: |
