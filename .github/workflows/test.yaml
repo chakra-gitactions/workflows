@@ -11,7 +11,7 @@ jobs:
   steps:
   - name: get commitid
     run: |
-       echo "version=${GITHUB_SHA::5}"
+       echo "version=${GITHUB_SHA::5}" >> "${GITHUB_ENV}"
        
   - name: Print version
     run: |
