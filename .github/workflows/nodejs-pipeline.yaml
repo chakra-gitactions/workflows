@@ -85,7 +85,7 @@ jobs:
             --format table \
             --pkg-types os \
             --severity CRITICAL,HIGH,MEDIUM \
-            --exit-code 1 ${image_name}
+            --exit-code 1 $image_name
 
   - name: Update commit status for image scan
     if: always()
