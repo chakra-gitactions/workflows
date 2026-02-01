@@ -38,7 +38,7 @@ jobs:
       
   - name: Build image
     run: |
-      docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:latest
+      docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:latest .
       docker images
 
   - name: Push image
