@@ -13,15 +13,25 @@ on:
     type: string
 env:
  acid: 406682759639
+ appVersion: ${{ github.sha }}
 jobs:
  nodejs-pipeline:
   runs-on: self-hosted
   steps:
   - name: Get code
     uses: actions/checkout@v6
-    
+      
   - name: List files
     run: ls -l
+
+  - name: Print app version
+    run: echo ${appVersion}
+
+  - name: Print inputs
+    run: |
+      echo "${{ inputs.project }}"
+      echo "${{inputs.environment}}"
+      echo "${{inputs.component}}"
 
   - name: Install dependencies
     run: npm install
@@ -38,7 +48,7 @@ jobs:
       
   - name: Build image
     run: |
-      docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:latest .
+      docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion} .
       docker images
 
   - name: Push image
