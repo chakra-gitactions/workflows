@@ -25,7 +25,7 @@ jobs:
     run: ls -l
 
   - name: Print app version
-    run: echo ${appVersion}
+    run: echo ${appVersion::5}
 
   - name: Print inputs
     run: |
@@ -48,13 +48,13 @@ jobs:
       
   - name: Build image
     run: |
-      docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion} .
+      docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion::5} .
       docker images
 
   - name: Push image
     run: |
      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${acid}.dkr.ecr.us-east-1.amazonaws.com
-     docker push ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:latest
+     docker push ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion::5}
     
 
 
