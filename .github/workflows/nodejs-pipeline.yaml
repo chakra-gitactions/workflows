@@ -1,0 +1,65 @@
+name: nodejs pipeline
+on:
+ workflow_call:
+  inputs:
+   project:
+    required: true
+    type: string
+   enironment:
+    required: true
+    type: string
+   component:
+    required: true
+    type: string
+env:
+ acid: 406682759639
+jobs:
+ nodejs-pipeline:
+  runs-on: self-hosted
+  steps:
+  - name: Get code
+    uses: actions/checkout@v6
+    
+  - name: List files
+    run: ls -l
+
+  - name: Install dependencies
+    run: npm install
+
+  - name: Run test
+    run: npm run test
+
+  - name: Configure AWS credentials
+    uses: aws-actions/configure-aws-credentials@v5
+    with:
+      aws-region: us-east-1
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+  - name: Build image
+    run: |
+      docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:latest
+      docker images
+
+  - name: Push image
+    run: |
+     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${acid}.dkr.ecr.us-east-1.amazonaws.com
+     docker push ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:latest
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+     
