@@ -85,7 +85,7 @@ jobs:
             --format table \
             --pkg-types os \
             --severity CRITICAL,HIGH,MEDIUM \
-            --exit-code 1 $image-name
+            --exit-code 1 ${image-name}
 
   - name: Update commit status for image scan
     if: always()
@@ -99,7 +99,7 @@ jobs:
   - name: Push image
     run: |
       aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${acid}.dkr.ecr.us-east-1.amazonaws.com
-      docker push  ${acid}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appVersion}
+      docker push  ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion}
 
 
   
