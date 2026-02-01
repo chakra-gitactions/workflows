@@ -1,8 +1,6 @@
 name: test
 on:
  workflow_dispatch:
-env: 
- version: ${GITHUB_SHA::5}
 jobs:
  test:
   timeout-minutes: 1
@@ -13,4 +11,5 @@ jobs:
   steps:
   - name: print version
     run: |
+       echo "version=${GITHUB_SHA::5}}"
        echo "Version: ${version}"
