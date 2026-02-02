@@ -22,7 +22,7 @@ jobs:
         id: commit
         run: |
           SHORT_SHA="${{ inputs.version }}"
-          APP_VERSION="${SHORT_SHA:0:9}"
+          APP_VERSION="${SHORT_SHA:5}"
 
           echo "APP_VERSION=$APP_VERSION" >> "$GITHUB_ENV"
           echo "App version: $APP_VERSION"
