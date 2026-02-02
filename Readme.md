@@ -96,6 +96,78 @@ Capabilities
 - Migrating pipelines from Jenkins to github action's workflows.
 
 
+Lifecycle of CI/CD
+==
+
+***Feature pipeline:***
+- The workflow is created in feature branch.
+- Check out code
+- Install dependencies
+- Run Unit test
+- Build image
+- scan image
+- Set cloud credentials
+- Push to cloud registry
+- Use the trigger type push to trigger the CI pipeline at each commit/push
+- Use github commit statusess API to update each steps commit status to commit id
+- Use resuable workflow and actions and permissions.
+- At the end an image with commit id as tag will be pushed to registry.
+
+***Dev pipeline:***
+- Trigger dev pipeline when a PR is raised and merged with main branch.
+- Merge creates additional commit, so it will run the feature and dev pipeline.
+- The dev pipeline runs the feature steps and finally deploy the image/manifests to dev cluster.
+- Helm is used to deploy the chart to dev cluster.
+
+***UAT pipeline:***
+- A re-usable pipeline is used to perform commit status checks using API.
+- If successful, it will deploy the helm chart to UAT.
+- As input, we provide environment (QA, UAT) and version which is commit id.
+- This workflow is triggered manually, it also does integration testing.
+- Check commit status -> trigger env -> trigger end-to-end test -> deploy in UAT success -> E2E-Test sucess.
+
+***PROD pipeline:***
+- A re-usable pipeline is used to perform commit status checks using API.
+- If successful including UAT deployment, it will deploy the helm chart to UAT.
+- As input, we provide version which is commit id.
+- This workflow is triggered manually and follows CR process.
+
+***CR Process***
+- Checks, time, CR is approved or not.
+- Trigger prod deploy. L2 support or dev support
+- Jira ticket
+   - Change ticket number
+   - project code
+   - component
+   - version
+   - approvals -> TL, TM, TESTING, MANAGER, Client
+   - upload scan, test results
+   - time fixed
+   - rollback plan -> using helm automatic rollback
+   - Call api to get jira ticket details
+   - Check version
+   - Check time window < deployment window
+   - Status - approved or not
+   - Check commit status and trigger prod deploy
+   - Developer do the sanity checks
+-  
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
