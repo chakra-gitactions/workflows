@@ -1,7 +1,7 @@
 name: dev pipeline
 on:
- workflow_call: 
-  inputs:
+ workflow_call:   # The pipeline is called by a remote pipeline.
+  inputs:         # Caller has to provide the input for the variables required.
     project:
      required: true
      type: string
@@ -12,22 +12,22 @@ on:
      required: true
      type: string
 env:
- acid: 406682759639
+ acid: 406682759639  # Declaring the environment variable at workflow levels, can be used in all steps and jobs in the same workflow.
 jobs:
- dev-pipeline:
-  runs-on: DEV
+ dev-pipeline:     
+  runs-on: DEV       # Executed on DEV runner, which is a self hosted runner.
   steps:
-  - name: Get code
+  - name: Get code           # Using a plugin to download/clone the git repository onto the running.
     uses: actions/checkout@v6
     
   - name: List files
     run: ls -l
 
-  - name: Get application version
-    run: |  # When we store it in GITHUB_ENV it can be used in other steps in the same job.
+  - name: Get application version                                                            # We get the latest commit version of the repo using the context GITHUB_SHA
+    run: |  # When we store commit id in GITHUB_ENV it can be used in other steps in the same job.
       echo "appVersion=${GITHUB_SHA::5}" >> $GITHUB_ENV
 
-  - name: Print inputs
+  - name: Print inputs           # Prints the commit id and input variables.
     run: |
      echo ${appVersion}
      echo ${{inputs.project}}
@@ -35,7 +35,7 @@ jobs:
      echo ${{inputs.environment}}
 
   - name: Install dependencies
-    id: dependencies
+    id: dependencies                      # Storing the result of the comment in this variable, the variable can be used in other steps.
     run: npm install
 
   - name: Update commit status for dependencies
@@ -105,10 +105,10 @@ jobs:
 
   - name: Configure EKS credentials
     run: |
-      aws eks update-kubeconfig --region us-east-1 --name ${{inputs.project}}-${{inputs.environment}}
+      aws eks update-kubeconfig --region us-east-1 --name ${{inputs.project}}-${{inputs.environment}}       (Configuring EKS cluster authorization)
       kubectl get nodes
 
-  - name: Get catalogue deploy repo
+  - name: Get catalogue deploy repo              # Cloning the catalogue-deploy repo on to the runner.
     uses: actions/checkout@v6
     with:
       repository: 'Chakradhar-Jeereddy/catalogue-deploy'
@@ -117,6 +117,15 @@ jobs:
     id: dev_deploy
     run: |
      helm upgrade --install ${{inputs.component}} -f values-${{inputs.environment}}.yaml -n ${{inputs.project}} --set deployment.imageVersion=${appVersion} --atomic --wait --timeout=5m .
+ # Upgrade: Update the release if already exists, if not install it.
+ # In both cases run the helm command.
+ # Install: name of the release
+ # values-dev.yaml: overwrites the values.yaml file in the chart.
+ # -n: namespace name
+ # deployment.imageVersion: overwrites the image version at runtime.
+ # atomic: Protects from broken pipeline, if the pipeline fails, help will rollback the release.
+ # --wait: Wait untill the deployment is successful
+ # --timeout: timeout after 5 minutes.
 
   - name: Update Dev deploy status
     if: always()
