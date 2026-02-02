@@ -88,10 +88,12 @@ Actions
 - To download repo into runner we use ***uses: actions/checkout@v3***
 - We use version to keep it stable and wont take new/untested versions.
 
-Actions
+
+Capabilities
 ==
 
-
+- Writing re-usable workflows in github actions, developing actions.
+- Migrating pipelines from Jenkins to github action's workflows.
 
 
 
