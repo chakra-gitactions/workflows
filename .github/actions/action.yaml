@@ -1,5 +1,6 @@
 name: "Update Commit Status"
-description: "Updates GitHub commit status checks using the GitHub Statuses API"
+description: "Updates GitHub commit status checks using the GitHub Status API"
+# Actions: Reusable scripts developed by different official vendors, market place and so on.
 
 inputs:
   sha:
@@ -8,7 +9,7 @@ inputs:
   state:
     description: "Status: success, failure, pending, error"
     required: true
-  context:
+  context:                                                        # Label to identify the check, such as unit test, docker build and so on.
     description: "Status check context name (ex: DOCKER_BUILD)"
     required: true
   description:
@@ -17,7 +18,7 @@ inputs:
     default: ""
 
 runs:
-  using: "composite"
+  using: "composite"      #Re-usable mini workflow that you can call using uses: ./.github/actions/<folder>
   steps:
     - name: Update commit status
       shell: bash
