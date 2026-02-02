@@ -42,7 +42,7 @@ jobs:
     if: always()
     uses: chakra-gitactions/workflows/.github/actions@main
     with:
-      sha: ${GITHUB_SHA::5}
+      sha: ${{github.sha}}
       state: ${{steps.dependencies.outcome}}  #success, failure, cancelled, error.
       context: Depencencies  #label added to commit status.
       description: "Dependency installation ${{steps.dependencies.outcome}}"
@@ -55,7 +55,7 @@ jobs:
     if: always()
     uses: chakra-gitactions/workflows/.github/actions@main
     with:
-      sha: ${GITHUB_SHA::5}
+      sha: ${{github.sha}}
       state: ${{steps.unit_tests.outcome}}  #success, failure, cancelled, error.
       context: UNIT_TESTS  #label added to commit status.
       description: "Unit test ${{steps.unit_tests.outcome}}"
@@ -70,7 +70,7 @@ jobs:
     if: always()
     uses: chakra-gitactions/workflows/.github/actions@main
     with:
-      sha: ${GITHUB_SHA::5}
+      sha: ${{github.sha}}
       state: ${{steps.docker_build.outcome}}  #success, failure, cancelled, error.
       context: DOCKER_BUILD  #label added to commit status.
       description: "Docker build ${{steps.docker_build.outcome}}"
@@ -86,7 +86,7 @@ jobs:
     if: always()
     uses: chakra-gitactions/workflows/.github/actions@main
     with:
-      sha: ${GITHUB_SHA::5}
+      sha: ${{github.sha}}
       state: ${{steps.trivy.outcome}}  #success, failure, cancelled, error.
       context: SCAN_IMAGE  #label added to commit status.
       description: "IMAGE SCAN ${{steps.trivy.outcome}}"
