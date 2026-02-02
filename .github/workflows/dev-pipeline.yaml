@@ -105,7 +105,7 @@ jobs:
 
   - name: Configure EKS credentials
     run: |
-      aws eks update-kubeconfig --region us-east-1 --name ${{inputs.project}}-${{inputs.environment}}       (Configuring EKS cluster authorization)
+      aws eks update-kubeconfig --region us-east-1 --name ${{inputs.project}}-${{inputs.environment}}       #Configuring EKS cluster authorization
       kubectl get nodes
 
   - name: Get catalogue deploy repo              # Cloning the catalogue-deploy repo on to the runner.
