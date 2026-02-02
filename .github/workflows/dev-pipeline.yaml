@@ -116,7 +116,7 @@ jobs:
   - name: Deploy to dev cluster
     id: dev_deploy
     run: |
-     helm upgrade --install ${{inputs.component}} -f values-${{inputs.environment}}.yaml -n ${{inputs.project}} --set deployment.imageVersion=${appVersion} --automic --wait --timeout=5m .
+     helm upgrade --install ${{inputs.component}} -f values-${{inputs.environment}}.yaml -n ${{inputs.project}} --set deployment.imageVersion=${appVersion} --atomic --wait --timeout=5m .
 
   - name: Update Dev deploy status
     if: always()
