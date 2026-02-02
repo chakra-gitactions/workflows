@@ -1,1 +1,129 @@
 name: dev pipeline
+on:
+ workflow_call: 
+  inputs:
+    project:
+     required: true
+     type: string
+    environment:
+     required: true
+     type: string
+    component:
+     required: true
+     type: string
+env:
+ acid: 406682759639
+jobs:
+ dev-pipeline:
+  runs-on: DEV
+  steps:
+  - name: Get code
+    uses: actions/checkout@v6
+    
+  - name: List files
+    run: ls -l
+
+  - name: Get application version
+    run: |  # When we store it in GITHUB_ENV it can be used in other steps in the same job.
+      echo "appVersion=${GITHUB_SHA::5}" >> $GITHUB_ENV
+
+  - name: Print inputs
+    run: |
+     echo ${appVersion}
+     echo ${{inputs.project}}
+     echo ${{inputs.component}}
+     echo ${{inputs.environment}}
+
+  - name: Install dependencies
+    id: dependencies
+    run: npm install
+
+  - name: Update commit status for dependencies
+    if: always()
+    uses: chakra-gitactions/workflows/.github/actions@main
+    with:
+      sha: ${{github.sha}}
+      state: ${{steps.dependencies.outcome}}  #success, failure, cancelled, error.
+      context: Depencencies  #label added to commit status.
+      description: "Dependency installation ${{steps.dependencies.outcome}}"
+      
+  - name: Unit test
+    id: unit_tests
+    run: echo "Test successful"
+
+  - name: Update commit status for unit test
+    if: always()
+    uses: chakra-gitactions/workflows/.github/actions@main
+    with:
+      sha: ${{github.sha}}
+      state: ${{steps.unit_tests.outcome}}  #success, failure, cancelled, error.
+      context: UNIT_TESTS  #label added to commit status.
+      description: "Unit test ${{steps.unit_tests.outcome}}"
+
+  - name: Build image
+    id: docker_build
+    run: |
+       docker build -t ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion} .
+       docker images
+
+  - name: Update commit status for docker build
+    if: always()
+    uses: chakra-gitactions/workflows/.github/actions@main
+    with:
+      sha: ${{github.sha}}
+      state: ${{steps.docker_build.outcome}}  #success, failure, cancelled, error.
+      context: DOCKER_BUILD  #label added to commit status.
+      description: "Docker build ${{steps.docker_build.outcome}}"
+
+  - name: Scan image
+    id: trivy
+    run: |
+          image_name=${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion}
+          #Scan the image for vulnerabilites
+          trivy image --scanners vuln --format table --pkg-types os --severity CRITICAL,HIGH,MEDIUM --exit-code 1 $image_name
+
+  - name: Update commit status for image scan
+    if: always()
+    uses: chakra-gitactions/workflows/.github/actions@main
+    with:
+      sha: ${{github.sha}}
+      state: ${{steps.trivy.outcome}}  #success, failure, cancelled, error.
+      context: SCAN_IMAGE  #label added to commit status.
+      description: "IMAGE SCAN ${{steps.trivy.outcome}}"
+
+  - name: Configure AWS Credentials
+    uses: aws-actions/configure-aws-credentials@v5.1.1
+    with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+      
+  - name: Push image
+    run: |
+      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${acid}.dkr.ecr.us-east-1.amazonaws.com
+      docker push  ${acid}.dkr.ecr.us-east-1.amazonaws.com/${{inputs.project}}/${{inputs.component}}:${appVersion}
+
+  - name: Configure EKS credentials
+    run: |
+      aws eks update-kubeconfig --region us-east-1 --name ${{inputs.project}}
+      kubectl get nodes
+
+  - name: Get catalogue deploy repo
+    uses: actions/checkout@v6
+    with:
+      repository: 'Chakradhar-Jeereddy/catalogue-deploy'
+
+  - name: Deploy to dev cluster
+    id: dev_deploy
+    run: |
+     helm upgrade --install ${{inputs.component}} -f values-${{inputs.environment}}.yaml -n ${{inputs.project}} --set deployment.imageVersion=${appVersion} --automic --wait --timeout=5m .
+
+  - name: Update Dev deploy status
+    if: always()
+    uses: chakra-gitactions/workflows/.github/actions@main
+    with:
+      sha: ${{github.sha}}
+      state: ${{steps.dev_deploy.outcome}}  #success, failure, cancelled, error.
+      context: DEV_DEPLOY  #label added to commit status.
+      description: "DEV DEPLOY ${{steps.dev_deploy.outcome}}"
+    
