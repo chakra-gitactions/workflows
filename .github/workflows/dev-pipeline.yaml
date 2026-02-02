@@ -105,7 +105,7 @@ jobs:
 
   - name: Configure EKS credentials
     run: |
-      aws eks update-kubeconfig --region us-east-1 --name ${{inputs.project}}
+      aws eks update-kubeconfig --region us-east-1 --name ${{inputs.project}}-${{inputs.environment}}
       kubectl get nodes
 
   - name: Get catalogue deploy repo
